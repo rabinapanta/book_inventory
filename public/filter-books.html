@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Filter Books</title>
+</head>
+<body>
+    <h1>Filter Books</h1>
+
+    <form id="filterForm">
+        <input type="text" id="filterTitle" placeholder="Filter by Title">
+        <input type="text" id="filterAuthor" placeholder="Filter by Author">
+        <input type="text" id="filterGenre" placeholder="Filter by Genre">
+        <input type="date" id="filterPublicationDate" placeholder="Publication Date">
+        <button type="submit">Filter</button>
+    </form>
+
+    <div id="booksList"></div>
+
+    <!-- Back Button -->
+    <button onclick="window.location.href='index.html'">Back</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

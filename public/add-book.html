@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Add Book</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Add a New Book</h1>
+        <form id="addBookForm">
+            <input type="text" id="Title" placeholder="Title" required>
+            <input type="text" id="Author" placeholder="Author" required>
+            <input type="text" id="Genre" placeholder="Genre" required>
+            <input type="date" id="PublicationDate" required>
+            <input type="text" id="ISBN" placeholder="ISBN" required>
+            <button type="submit">Add Book</button>
+        </form>
+        <button onclick="window.location.href='index.html'">Back</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
