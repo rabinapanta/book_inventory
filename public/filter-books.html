@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Filter Books</title>
 </head>
+
 <body>
     <h1>Filter Books</h1>
 
-    <form id="filterForm">
-        <input type="text" id="filterTitle" placeholder="Filter by Title">
-        <input type="text" id="filterAuthor" placeholder="Filter by Author">
-        <input type="text" id="filterGenre" placeholder="Filter by Genre">
-        <input type="date" id="filterPublicationDate" placeholder="Publication Date">
+    <form id="filterForm" action="" method="get">
+        <label for="filterTitle">Filter by Title:</label>
+        <input type="text" id="filterTitle" name="filterTitle" placeholder="Author's name">
+
+        <label for="filterAuthor">Filter by Author:</label>
+        <input type="text" id="filterAuthor" name="filterAuthor" placeholder="Author's name">
+
+        <label for="filterGenre">Filter by Genre:</label>
+        <input type="text" id="filterGenre" name="filterGenre" placeholder="Genre">
+
+        <label for="filterDate">Publication Date:</label>
+        <input type="date" id="filterDate" name="filterDate">
+
         <button type="submit">Filter</button>
     </form>
 
-    <div id="booksList"></div>
+    <table id="booksTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Publication Date</th>
+                <th>ISBN</th>
+            </tr>
+        </thead>
+        <tbody id="booksBody">
+            <!-- Book rows will be populated here -->
+        </tbody>
+    </table>
 
     <!-- Back Button -->
     <button onclick="window.location.href='index.html'">Back</button>
 
     <script src="script.js"></script>
 </body>
+
 </html>
