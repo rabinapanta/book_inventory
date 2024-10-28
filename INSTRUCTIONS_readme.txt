@@ -8,7 +8,7 @@ Git: ensure Git is installed
 
 Project Setup Instructions:
 
-1.Clone the Repository
+1.Clone the Repository or extract the zip file provided in the email.
 
 git clone <https://github.com/rabinapanta/book_inventory>
 cd book_inventory
