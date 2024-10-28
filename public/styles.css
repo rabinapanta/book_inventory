@@ -1,13 +1,18 @@
+/* General styles */
 body {
     font-family: Arial, sans-serif;
+    background-color: rgb(166, 212, 197);
     margin: 20px;
     padding: 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 
 h1 {
     text-align: center;
+    font-size: 2em;
 }
-
+/* Form styles */
 #addBookForm {
     margin-bottom: 20px;
 }
@@ -22,21 +27,26 @@ input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
 }
 
 button {
-    padding: 10px;
+    padding: 12px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin: 10px 0;
+    font-size: 1em;
+    width: 100%;
 }
 
 button:hover {
     background-color: #218838;
 }
 
+/* Table styles */
 #booksList {
     margin-top: 20px;
 }
@@ -61,4 +71,49 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #f1f1f1;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    body {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.75em;
+    }
+
+    input, button {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    th, td {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin: 5px;
+        padding: 5px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    input, button {
+        padding: 8px;
+        font-size: 0.85em;
+    }
+
+    table {
+        font-size: 0.85em;
+    }
+
+    th, td {
+        padding: 4px;
+    }
 }

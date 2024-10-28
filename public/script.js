@@ -52,98 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-// document.addEventListener('DOMContentLoaded', () => {
-//     const filterButton = document.getElementById('filterButton'); // Reference the filter button
-//     const booksBody = document.getElementById('booksBody'); // Reference the tbody where books will be displayed
 
-//     // Event listener for filtering books
-//     if (filterButton) {
-//         filterButton.addEventListener('click', async () => {
-//             console.log('Filter button clicked');
-
-//             // Get filter values
-//             const title = document.getElementById('filterTitle').value.trim();
-//             const author = document.getElementById('filterAuthor').value.trim();
-//             const genre = document.getElementById('filterGenre').value.trim();
-//             const publicationDate = document.getElementById('filterDate').value.trim();
-
-//             const queryParams = new URLSearchParams();
-//             if (title) queryParams.append('Title', title);
-//             if (author) queryParams.append('Author', author);
-//             if (genre) queryParams.append('Genre', genre);
-//             if (publicationDate) queryParams.append('PublicationDate', publicationDate);
-
-//             // Log the constructed URL
-//             console.log(`Fetching from: /api/books?${queryParams.toString()}`);
-
-//             try {
-//                 // Fetch filtered books from the server
-//                 const response = await fetch(`/api/books?${queryParams}`);
-//                 if (!response.ok) throw new Error('Network response was not ok');
-
-//                 const books = await response.json();
-//                 booksBody.innerHTML = ''; // Clear previous results
-
-//                 if (books.length === 0) {
-//                     booksBody.innerHTML = '<tr><td colspan="5">No books found matching your criteria.</td></tr>';
-//                     return;
-//                 }
-
-//                 // Display the filtered books in the table
-//                 books.forEach(book => {
-//                     const row = document.createElement('tr');
-//                     row.innerHTML = `
-//                         <td>${book.Title}</td>
-//                         <td>${book.Author}</td>
-//                         <td>${book.Genre}</td>
-//                         <td>${new Date(book.PublicationDate).toLocaleDateString()}</td>
-//                         <td>${book.ISBN}</td>`;
-//                     booksBody.appendChild(row);
-//                 });
-//             } catch (error) {
-//                 console.error('Error fetching filtered books:', error);
-//                 alert('An error occurred while filtering books. Please try again.');
-//             }
-//         });
-//     } else {
-//         console.error('Filter button not found');
-//     }
-
-//     // Function to load all books on initial page load
-//     async function loadBooks() {
-//         try {
-//             const response = await fetch('/api/books');
-//             const books = await response.json();
-//             booksBody.innerHTML = ''; // Clear previous content
-
-//             // Display all books in the table
-//             books.forEach(book => {
-//                 const row = document.createElement('tr');
-//                 row.innerHTML = `
-//                     <td>${book.Title}</td>
-//                     <td>${book.Author}</td>
-//                     <td>${book.Genre}</td>
-//                     <td>${new Date(book.PublicationDate).toLocaleDateString()}</td>
-//                     <td>${book.ISBN}</td>`;
-//                 booksBody.appendChild(row);
-//             });
-//         } catch (error) {
-//             console.error('Error loading books:', error);
-//         }
-//     }
-
-//     // Load books on page load
-//     loadBooks();
-// });
 
 document.addEventListener('DOMContentLoaded', () => {
     const filterButton = document.getElementById('filterButton');
 
-    // Function to load all books initially
+    // Function to load books, with optional query parameters for filtering
     async function loadBooks(queryParams = '') {
         try {
-            const response = await fetch(`/api/books${queryParams ? `?${queryParams}` : ''}`);
-
+            const response = await fetch(`/api/books?${queryParams}`);
             const books = await response.json();
 
             const booksBody = document.getElementById('booksBody');
@@ -154,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Display filtered books in the table
+            // Display books (filtered or all) in the table
             books.forEach(book => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -168,22 +85,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (error) {
             console.error('Error loading books:', error);
-            // alert('An error occurred while loading books. Please try again.');
         }
     }
 
-    // Load all books on page load
-    loadBooks();
+    // Load all books on page load, but only once
+    let initialLoadDone = false;
+
+    if (!initialLoadDone) {
+        loadBooks(); // Load all books only once when the page is loaded
+        initialLoadDone = true;
+    }
 
     // Event listener for filtering books
     if (filterButton) {
         filterButton.addEventListener('click', async () => {
+            event.preventDefault();  // Prevent the default form submission (reloading)
             console.log('Filter button clicked');
 
             const title = document.getElementById('filterTitle').value.trim();
             const author = document.getElementById('filterAuthor').value.trim();
             const genre = document.getElementById('filterGenre').value.trim();
             const publicationDate = document.getElementById('filterDate').value.trim();
+
+            console.log(`Title: ${title}, Author: ${author}, Genre: ${genre}, PublicationDate: ${publicationDate}`);
 
             const queryParams = new URLSearchParams();
             if (title) queryParams.append('Title', title);
@@ -193,12 +117,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log(`Fetching from: /api/books?${queryParams.toString()}`);
 
-            // Load books with the provided filter
+            // Load filtered books, the initial load of all books won't happen again
             loadBooks(queryParams.toString());
         });
     } else {
         console.error('Filter button not found');
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Function to export books as CSV or JSON
+    async function exportBooks(format) {
+        try {
+            // Fetch all books
+            const response = await fetch('/api/books');
+            const books = await response.json();
+
+            // Check if books are present
+            if (books.length === 0) {
+                alert('No books to export.');
+                return;
+            }
+
+            if (format === 'csv') {
+                // Convert books to CSV and trigger download
+                exportAsCSV(books);
+            } else if (format === 'json') {
+                // Export as JSON and trigger download
+                exportAsJSON(books);
+            }
+        } catch (error) {
+            console.error('Error exporting books:', error);
+        }
+    }
+
+    // Function to export books as CSV
+    function exportAsCSV(books) {
+        const headers = ['Title', 'Author', 'Genre', 'Publication Date', 'ISBN'];
+        const rows = books.map(book => [
+            book.Title,
+            book.Author,
+            book.Genre,
+            new Date(book.PublicationDate).toLocaleDateString(),
+            book.ISBN
+        ]);
+
+        // Combine headers and rows
+        let csvContent = headers.join(',') + '\n';
+        rows.forEach(row => {
+            csvContent += row.join(',') + '\n';
+        });
+
+        // Create a Blob and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'books.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Function to export books as JSON
+    function exportAsJSON(books) {
+        const jsonContent = JSON.stringify(books, null, 2);
+
+        // Create a Blob and trigger download
+        const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'books.json');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Make exportBooks globally accessible
+    window.exportBooks = exportBooks;
 });
 
 
